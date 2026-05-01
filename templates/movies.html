@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if error %}
+  <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  <h2>Movies</h2>
+
+  <form action="/users/{{ user_id }}/movies" method="POST">
+    <input type="text" name="title" placeholder="Movie">
+    <button type="submit">Add movie</button>
+  </form>
+
+  <ul>
+  {% for movie in movies %}
+    <li>
+      <a href="/users/{{ user_id }}/movies">{{ movie.title }}</a>
+      <p>{{ movie.director }}</p>
+      <p>{{ movie.publication_year }}</p>
+      <img class="movie-poster" src="{{ movie.poster_url }}" title="No note yet">
+      <form action="/users/{{ user_id }}/movies/{{ movie.id }}/delete" method="POST">
+        <button type="submit">Delete movie</button>
+      </form>
+      <form action="/users/{{ user_id }}/movies/{{ movie.id }}/update" method="POST">
+        <button type="submit">Update movie</button>
+        <input type="text" name="new_title" placeholder="Update title">
+      </form>
+    </li>
+  {% endfor %}
+  </ul>
+{% endblock %}
