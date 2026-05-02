@@ -41,7 +41,9 @@ class DataManager():
     def update_movie(self, movie_id, new_title):
         movie = db.session.query(Movie)\
                     .filter(Movie.id == movie_id)\
-                    .one()
+                    .first()
+        if movie is None:
+            return
         movie.title = new_title
         db.session.commit()
 
@@ -51,3 +53,6 @@ class DataManager():
             .filter(Movie.id == movie_id)\
             .delete()
         db.session.commit()
+
+    def get_all_movies(self):
+        return db.session.query(Movie).all()

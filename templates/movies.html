@@ -6,26 +6,28 @@
   {% endif %}
   <h2>Movies</h2>
 
-  <form action="/users/{{ user_id }}/movies" method="POST">
-    <input type="text" name="title" placeholder="Movie">
-    <button type="submit">Add movie</button>
+  <form action="/users/{{ user_id }}/movies" method="POST" class="search-form">
+    <input type="text" name="title" placeholder="New Movie...">
+    <button type="submit" class="btn-primary">Add movie</button>
   </form>
 
-  <ul>
+  <div class="movie-grid">
   {% for movie in movies %}
-    <li>
-      <a href="/users/{{ user_id }}/movies">{{ movie.title }}</a>
+    <div class="movie-card">
+      <p class="movie-title">{{ movie.title }}</p>
       <p>{{ movie.director }}</p>
       <p>{{ movie.publication_year }}</p>
       <img class="movie-poster" src="{{ movie.poster_url }}" title="No note yet">
+
+      <form action="/users/{{ user_id }}/movies/{{ movie.id }}/update" method="POST" class="update-form">
+        <input type="text" name="new_title" placeholder="New Title...">
+        <button type="submit" class="btn-update">Update movie</button>
+      </form>
+
       <form action="/users/{{ user_id }}/movies/{{ movie.id }}/delete" method="POST">
-        <button type="submit">Delete movie</button>
+        <button type="submit" class="btn-delete">Delete movie</button>
       </form>
-      <form action="/users/{{ user_id }}/movies/{{ movie.id }}/update" method="POST">
-        <button type="submit">Update movie</button>
-        <input type="text" name="new_title" placeholder="Update title">
-      </form>
-    </li>
+    </div>
   {% endfor %}
-  </ul>
+  </div>
 {% endblock %}

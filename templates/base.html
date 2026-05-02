@@ -6,10 +6,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>MoviWeb App</h1>
-
+    <nav>
+        <a href="/" class="nav-title">MoviWebApp</a>
+        <a href="/users">User</a>
+    </nav>
+    <div class="main-container">
     {% block content %}
     {% endblock %}
-
+    </div>
 </body>
 </html>

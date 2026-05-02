@@ -16,8 +16,9 @@ db.init_app(app)  # Link the database and the app. This is the reason you need t
 data_manager = DataManager() # Create an object of your DataManager class
 
 @app.route('/')
-def home():
-    return "Welcome to MoviWeb App!"
+def index():
+    movies = data_manager.get_all_movies()
+    return render_template('index.html', movies=movies)
 
 
 @app.route('/users', methods=['GET'])
@@ -27,7 +28,7 @@ def list_users():
 
 
 @app.route('/users', methods=['POST'])
-def add_user():
+def create_user():
     user_name = request.form.get('name')
     data_manager.create_user(user_name)
     return redirect('/')
@@ -43,6 +44,13 @@ def list_movies(user_id):
 def add_movie(user_id):
     search_title = request.form.get('title')
     response = get_search_api_response(search_title)
+    if response is None:
+        movies = data_manager.get_movies(user_id)
+        return render_template('movies.html',
+                               movies=movies,
+                               user_id=user_id,
+                               error="API not reachable! Try again later")
+
     movie_info = response.json()
 
     movie_data = validate_and_parse_api_response(movie_info)
@@ -69,6 +77,11 @@ def update_movie(user_id, movie_id):
 def delete_movie(user_id, movie_id):
     data_manager.delete_movie(movie_id)
     return redirect(f'/users/{user_id}/movies')
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
 if __name__ == '__main__':

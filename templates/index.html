@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to the MoviWebApp</h1>
+<h1>Movies</h1>
+  <div class="movie-grid">
+  {% for movie in movies %}
+    <div class="movie-card">
+      <p class="movie-title">{{ movie.title }}</p>
+      <p>{{ movie.director }}</p>
+      <p>{{ movie.publication_year }}</p>
+      <img class="movie-poster" src="{{ movie.poster_url }}">
+      </div>
+  {% endfor %}
+  </div>
+
+{% endblock %}
+
