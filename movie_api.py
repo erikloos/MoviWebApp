@@ -1,10 +1,12 @@
+"""Handle API requests to the OMDB API."""
+
 import os
 from dotenv import load_dotenv
 import requests
 
 load_dotenv()
-API = os.getenv('API')
-API_KEY = os.getenv('API_KEY')
+API = os.getenv('API')          # Base URL for OMDB API
+API_KEY = os.getenv('API_KEY')  # API key for OMDB API
 
 
 def validate_and_parse_api_response(
@@ -67,48 +69,3 @@ def get_search_api_response(search_title: str) -> requests.Response | None:
     """Send a movie request by search to the API and return a response object if successful."""
     params = {"apikey": API_KEY, "t": search_title, "type": "movie"}
     return make_api_response(params)
-
-
-def get_movie_api_response(imdb_id: str) -> requests.Response | None:
-    """Send a movie request by ID to the API and return a response object if successful."""
-    params = {"apikey": API_KEY, "i": imdb_id}
-    return make_api_response(params)
-
-
-def get_movie_data_by_id(imdb_id: str) -> tuple[dict[str, str | int | float | None] | None, str | None]:
-    """Fetch and validate movie data from API by imdb_id"""
-    movie_response = get_movie_api_response(imdb_id)
-
-    if movie_response is None:
-        return None, "api_error"
-
-    if movie_response.status_code != 200:
-        return None, "api_error"
-
-    try:
-        movie_info = movie_response.json()
-    except ValueError:
-        return None, "invalid_json"
-
-    movie_data = validate_and_parse_api_response(movie_info)
-
-    if movie_data is None:
-        return None, "invalid_data"
-
-    return movie_data, None
-
-
-def search_movies_in_api(search_title: str) -> tuple[list[dict[str, str]] | None, str | None]:
-    response = get_search_api_response(search_title)
-    if response is None:
-        return None, "api_error"
-
-    try:
-        movie_info = response.json()
-    except ValueError:
-        return None, "invalid_json"
-
-    if movie_info.get("Response") != "True":
-        return None, "not_found"
-
-    return movie_info["Search"], None

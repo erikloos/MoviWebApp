@@ -1,32 +1,32 @@
+"""Defines the DataManager class for MoviWebApp"""
+
 from models import db, User, Movie
 
-class DataManager():
-    # Define Crud operations as methods
-    def create_user(self, name):
+class DataManager:
+    """Manage all database operations."""
+
+    def create_user(self, name: str) -> int:
+        """Create a new user in the database and return the user id."""
         new_user = User(name=name)
         db.session.add(new_user)
         db.session.commit()
+        return new_user.id
 
 
-    def get_users(self):
-        user_list = []
-        users = db.session.query(User).all()
-        for user in users:
-            user_list.append(user)
-        return user_list
+    def get_users(self) -> list[User]:
+        """Return all user's in the database."""
+        return db.session.query(User).all()
 
 
-    def get_movies(self, user_id):
-        movie_list = []
-        movies = db.session.query(Movie)\
-                  .filter(Movie.user_id == user_id)\
-                  .all()
-        for movie in movies:
-            movie_list.append(movie)
-        return movie_list
+    def get_movies(self, user_id: int) -> list[Movie]:
+        """Return all movies of a specific user."""
+        return db.session.query(Movie)\
+                .filter(Movie.user_id == user_id)\
+                .all()
 
 
-    def add_movies(self, movie, user_id):
+    def add_movies(self, movie: dict, user_id: int) -> None:
+        """Add a specific movie to the database for a specific user."""
         new_movie = Movie(
             title = movie['title'],
             director = movie['director'],
@@ -38,7 +38,8 @@ class DataManager():
         db.session.commit()
 
 
-    def update_movie(self, movie_id, new_title):
+    def update_movie(self, movie_id: int, new_title: str) -> None:
+        """Changes the movie title for specific movie in the database."""
         movie = db.session.query(Movie)\
                     .filter(Movie.id == movie_id)\
                     .first()
@@ -48,11 +49,14 @@ class DataManager():
         db.session.commit()
 
 
-    def delete_movie(self, movie_id):
+    def delete_movie(self, movie_id: int) -> None:
+        """Delete a specific Movie from the database."""
         db.session.query(Movie)\
             .filter(Movie.id == movie_id)\
             .delete()
         db.session.commit()
 
-    def get_all_movies(self):
+
+    def get_all_movies(self) -> list[Movie]:
+        """Return a list of all movies from the database"""
         return db.session.query(Movie).all()
